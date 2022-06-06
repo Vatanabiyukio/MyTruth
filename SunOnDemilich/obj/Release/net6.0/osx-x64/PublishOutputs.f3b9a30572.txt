@@ -1,0 +1,5 @@
+/Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/osx-x64/publish/appsettings.Development.json
+/Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/osx-x64/publish/appsettings.json
+/Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/osx-x64/publish/appsettings.Production.json
+/Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/osx-x64/publish/SunOnDemilich.pdb
+/Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/osx-x64/publish/SunOnDemilich
