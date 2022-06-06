@@ -1,40 +1,50 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using FloorOnDemilich;
+using Microsoft.VisualBasic.CompilerServices;
 
 var random = new Random();
 var listaInicial = new List<int>();
 // var vetorInicial = Enumerable.Range(0, random.Next(1, (int)Math.Pow(10, 1))).Select(_ => random.Next(1000)).Distinct().ToList();
-var vetorInicial = Enumerable.Range(0, (int)Math.Pow(10, 1)).Select(_ => random.Next(1000)).Distinct().ToList();
-
 var stopwatch = new Stopwatch();
 stopwatch.Start();
+var vetorInicial = Enumerable.Range(0, (int)Math.Pow(10, 4)).Select(_ => random.Next((int)Math.Pow(10, 6))).Distinct().ToList();
+stopwatch.Stop();
 
-foreach (var item in vetorInicial)
+Console.WriteLine("[B] Elapsed Time is {0} Milliseconds", stopwatch.ElapsedMilliseconds);
+
+stopwatch.Start();
+
+/*foreach (var item in vetorInicial)
 {
     SqrtSort.InsertNode(listaInicial, item);
-}
+}*/
 
-var tamanhoMáximoCadaParte = (int)Math.Truncate(Math.Sqrt(listaInicial.Count));
+var tamanhoMáximoCadaParte = (int)Math.Truncate(Math.Sqrt(vetorInicial.Count));
 try
 {
     var listaQuebrada = vetorInicial.Chunk(tamanhoMáximoCadaParte).ToList();
     var listaOrdenada = new List<int>();
     while (true)
     {
-        listaQuebrada = listaQuebrada.Select(SqrtSort.BubbleSort).ToList();
-        var valorMáximoDisponível = listaQuebrada
-            .Select((lista, index) => lista.Max()).Max();
+        // listaQuebrada = listaQuebrada.Select(SqrtSort.BubbleSort).ToList();
+        var peixe = listaQuebrada.Select(item => SqrtSort.MakeHeap(item)).ToList();
+        listaQuebrada = peixe;
+        // var valorMáximoDisponível = listaQuebrada.Select(lista => lista.Max()).Max();
+        var valorMáximoDisponível = listaQuebrada.Select(lista => lista.Last()).Max();
         var listaTemporária2 = new List<int[]>();
         var listaTemporária = new List<int>();
-        foreach (var listaExterna in listaQuebrada)
+        /*foreach (var listaExterna in listaQuebrada)
         {
             if (!listaExterna.Contains(valorMáximoDisponível))
             {
                 listaTemporária2.Add(listaExterna);
                 continue;
             }
-
+        
             listaTemporária.AddRange(listaExterna.Where(listaInterna => listaInterna != valorMáximoDisponível));
             listaTemporária2.Add(listaTemporária.ToArray());
         }
@@ -49,16 +59,14 @@ try
                 Console.WriteLine(item);
             }
             break;
-        }
+        }*/
     }
-    Console.WriteLine("[H] Elapsed Time is {0} Milliseconds", stopwatch.ElapsedMilliseconds);
+    Console.WriteLine("[O] Elapsed Time is {0} Milliseconds", stopwatch.ElapsedMilliseconds);
 }
 catch (Exception e)
 {
     Console.WriteLine(e);
 }
-
-var listaBanana = 0;
 
 namespace FloorOnDemilich
 {
@@ -85,7 +93,7 @@ namespace FloorOnDemilich
             }
         }
 
-        private static void Heapify(IList<int> arr, int size, int element)
+        private static List<int> Heapify(List<int> arr, int size, int element)
         {
             while (true)
             {
@@ -104,6 +112,7 @@ namespace FloorOnDemilich
 
                 break;
             }
+            return arr;
         }
 
         public static void InsertNode(List<int> arr, int newElement)
@@ -115,7 +124,17 @@ namespace FloorOnDemilich
             }
         }
 
-        public static void RemoveNode(List<int> arr, int remElement)
+        public static int[] MakeHeap(int[] arr)
+        {
+            var peixe = new List<int>();
+            foreach (var item in arr)
+            {
+                InsertNode(peixe, item);
+            }
+            return peixe.ToArray();
+        }
+
+        public static List<int> RemoveNode(List<int> arr, int remElement)
         {
             var i = Enumerable.Range(0, arr.Count).TakeWhile(index => remElement != arr[index]).Count();
             (arr[i], arr[^1]) = (arr[^1], arr[i]);
@@ -126,6 +145,8 @@ namespace FloorOnDemilich
             {
                 Heapify(arr, arr.Count, index);
             }
+
+            return arr;
         }
 
         public static bool CheckMaxHeap(List<int> nums)
@@ -146,11 +167,11 @@ namespace FloorOnDemilich
             return true;
         }
 
-        public static int[] BubbleSort(int[] arr)
+        public static List<int> BubbleSort(List<int> arr)
         {
-            for (var j = 0; j <= arr.Length - 2; j++)
+            for (var j = 0; j <= arr.Count - 2; j++)
             {
-                for (var i = 0; i <= arr.Length - 2; i++)
+                for (var i = 0; i <= arr.Count - 2; i++)
                 {
                     if (arr[i] > arr[i + 1])
                     {
