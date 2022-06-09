@@ -10,17 +10,17 @@ foreach (var _ in Enumerable.Range(0, 1))
 {
     stopwatch.Start();
     var vetorInicial = Enumerable.Range(0, (int)Math.Pow(10, potência))
-        .Select(_ => random.Next((int)Math.Pow(10, 9))).Distinct().ToList();
+        .Select(_ => random.Next((int)Math.Pow(10, 9))).Distinct().ToList();    // θ(?)
     stopwatch.Stop();
     Console.WriteLine($"[#] Quantidade de unidades distintas no vetor: {vetorInicial.Count}");
     Console.WriteLine(
         $"[*] Tempo de geração da lista aleatória distinta: {stopwatch.ElapsedMilliseconds} Milissegundos\n");
     Console.WriteLine($"#=#=#=#=#=#= Método HEAP {potência} #=#=#=#=#=#=");
-    SqrtSort.ExecuçãoHeap(vetorInicial);
+    SqrtSort.ExecuçãoHeap(vetorInicial);    // θ(n log n)
     Console.WriteLine("#=#=#=#=##=#=#=#=##=#=#=#=#=#=#=#=#=#\n");
 
     Console.WriteLine($"#=#=#=#=# Método QUADRÁTICO {potência} #=#=#=#=#");
-    SqrtSort.ExecuçãoMétodoQuadrático(vetorInicial);
+    SqrtSort.ExecuçãoMétodoQuadrático(vetorInicial);    // θ(n^2)
     Console.WriteLine("#=#=#=#=##=#=#=#=##=#=#=#=#=#=#=#=#=#\n");
 }
 
@@ -31,19 +31,19 @@ namespace FloorOnDemilich
 {
     internal static class SqrtSort
     {
-        private static IEnumerable<int> RangePython(int start, int stop, int step = 1)
+        private static IEnumerable<int> RangePython(int start, int stop, int step = 1)  // θ(start)
         {
-            if (step == 0)
+            if (step == 0)  // θ(1)
                 throw new ArgumentException("Parameter step cannot equal zero.");
 
-            if (start < stop && step > 0)
+            if (start < stop && step > 0)   // θ(1) + θ(start) === θ(start)
             {
-                for (var i = start; i < stop; i += step)
+                for (var i = start; i < stop; i += step)    // θ(start)
                 {
                     yield return i;
                 }
             }
-            else if (start > stop && step < 0)
+            else if (start > stop && step < 0)  // θ(start)
             {
                 for (var i = start; i > stop; i += step)
                 {
@@ -52,28 +52,28 @@ namespace FloorOnDemilich
             }
         }
 
-        public static void PrintArray(List<int> arr, int n = 0)
+        /*public static void PrintArray(List<int> arr, int n = 0)
         {
             if (n == 0)
                 n = arr.Count;
             for (var i = 0; i < n; i++)
                 Console.WriteLine(arr[i] + " ");
-        }
+        }*/
 
-        private static void Heapify(IList<int> arr, int size, int element)
+        private static void Heapify(IList<int> arr, int size, int element)  // θ(log n)
         {
-            while (true)
+            while (true) // θ(log n)
             {
-                var largest = element;
-                var left = 2 * element + 1;
-                var right = 2 * element + 2;
+                var largest = element;  // θ(1)
+                var left = 2 * element + 1; // θ(1)
+                var right = 2 * element + 2;// θ(1)
 
-                if (left < size && arr[largest] < arr[left]) largest = left;
-                if (right < size && arr[largest] < arr[right]) largest = right;
-                if (largest != element)
+                if (left < size && arr[largest] < arr[left]) largest = left;    // θ(1)
+                if (right < size && arr[largest] < arr[right]) largest = right; // θ(1)
+                if (largest != element) // θ(1)
                 {
-                    (arr[element], arr[largest]) = (arr[largest], arr[element]);
-                    element = largest;
+                    (arr[element], arr[largest]) = (arr[largest], arr[element]);    // θ(1)
+                    element = largest;  // θ(1)
                     continue;
                 }
 
@@ -81,46 +81,46 @@ namespace FloorOnDemilich
             }
         }
 
-        private static void InsertNode(IList<int> arr, int newElement)
+        private static void InsertNode(IList<int> arr, int newElement)  // θ(log n)
         {
-            arr.Add(newElement);
-            foreach (var element in RangePython((arr.Count) / 2 - 1, -1, -1))
+            arr.Add(newElement);    // θ(1)
+            foreach (var element in RangePython((arr.Count) / 2 - 1, -1, -1))   // θ(log n)
             {
-                Heapify(arr, arr.Count, element);
+                Heapify(arr, arr.Count, element);   // θ(log n)
             }
         }
 
-        private static List<int> GenerateHeap(IEnumerable<int> arr)
+        private static List<int> GenerateHeap(IEnumerable<int> arr) // θ(n log n)
         {
             var peixe = new List<int>();
-            foreach (var item in arr)
+            foreach (var item in arr)   // θ(n)
             {
-                InsertNode(peixe, item);
+                InsertNode(peixe, item);    // θ(log n)
             }
 
             return peixe;
         }
 
-        public static List<int> RemoveNode(List<int> arr, int remElement)
+        public static List<int> RemoveNode(List<int> arr, int remElement)   // θ(?)
         {
-            var i = Enumerable.Range(0, arr.Count).TakeWhile(index => remElement != arr[index]).Count();
-            (arr[i], arr[^1]) = (arr[^1], arr[i]);
+            var i = Enumerable.Range(0, arr.Count).TakeWhile(index => remElement != arr[index]).Count();    // θ(?)
+            (arr[i], arr[^1]) = (arr[^1], arr[i]);  // θ(1)
 
-            arr.Remove(remElement);
+            arr.Remove(remElement); // θ(1)
 
-            foreach (var index in RangePython(arr.Count / 2 - 1, -1, -1))
+            foreach (var index in RangePython(arr.Count / 2 - 1, -1, -1)) // θ(log n)
             {
-                Heapify(arr, arr.Count, index);
+                Heapify(arr, arr.Count, index); // θ(log n)
             }
 
             return arr;
         }
 
-        private static void RemoveRootNode(List<int> arr)
+        private static void RemoveRootNode(List<int> arr)   // θ(log n)
         {
-            arr[0] = arr[^1];
-            arr.RemoveAt(arr.Count - 1);
-            Heapify(arr, arr.Count, 0);
+            arr[0] = arr[^1];   // θ(1)
+            arr.RemoveAt(arr.Count - 1);    // θ(1)
+            Heapify(arr, arr.Count, 0); // θ(log n)
         }
 
         /*private static bool CheckMaxHeap(List<int> nums)
@@ -168,15 +168,15 @@ namespace FloorOnDemilich
              return true;
          }
 
-        private static int[] BubbleSort(int[] arr)
+        private static int[] BubbleSort(int[] arr)  // θ(n^2)
         {
-            for (var j = 0; j <= arr.Length - 2; j++)
+            for (var j = 0; j <= arr.Length - 2; j++)   // θ(n)
             {
-                for (var i = 0; i <= arr.Length - 2; i++)
+                for (var i = 0; i <= arr.Length - 2; i++)   // θ(n)
                 {
-                    if (arr[i] > arr[i + 1])
+                    if (arr[i] > arr[i + 1])    // θ(1)
                     {
-                        (arr[i + 1], arr[i]) = (arr[i], arr[i + 1]);
+                        (arr[i + 1], arr[i]) = (arr[i], arr[i + 1]);    // θ(1)
                     }
                 }
             }
@@ -185,7 +185,7 @@ namespace FloorOnDemilich
         }
 
         [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
-        public static List<int> ExecuçãoHeap(List<int> vetorInicial)
+        public static List<int> ExecuçãoHeap(List<int> vetorInicial)    // θ(n log n) + θ(n^2 log n) === θ(n log n)
         {
             var stopwatch = new Stopwatch();
 
@@ -200,8 +200,8 @@ namespace FloorOnDemilich
             //     $"[*] Tempo de geração da lista aleatória distinta: {stopwatch.ElapsedMilliseconds} Milissegundos");
 
             stopwatch.Start();
-            var tamanhoMáximoCadaParte = (int)Math.Truncate(Math.Sqrt(vetorInicial.Count));
-            var listaQuebrada = vetorInicial.Chunk(tamanhoMáximoCadaParte).Select(GenerateHeap).ToList();
+            var tamanhoMáximoCadaParte = (int)Math.Truncate(Math.Sqrt(vetorInicial.Count)); // θ(1)
+            var listaQuebrada = vetorInicial.Chunk(tamanhoMáximoCadaParte).Select(GenerateHeap).ToList();   // θ(n) + θ(n / √n) + θ(n log n) === θ(n log n)
             // var listaVerificar = listaQuebrada.Any(x => CheckMaxHeap(x.ToList()));
             stopwatch.Stop();
             // if (!listaVerificar)
@@ -211,27 +211,27 @@ namespace FloorOnDemilich
                 $"[*] Tempo de criação de sub-listas e ordenação: {stopwatch.ElapsedMilliseconds} Milissegundos");
 
             stopwatch.Start();
-            var listaOrdenada = new List<int>();
-            while (true)
+            var listaOrdenada = new List<int>(); // θ(1)
+            while (true)    // ( θ(n log n) + θ(n) + θ(n) ) * θ(n) === θ(n log n) * θ(n) === θ(n^2 log n)
             {
                 try
                 {
-                    var maiorElementoSubHeaps = listaQuebrada.Select(heap => heap.First()).Max();
-                    listaOrdenada.Add(maiorElementoSubHeaps);
-                    var listaTemporáriaExterna = new List<List<int>>();
-                    foreach (var heap in listaQuebrada)
+                    var maiorElementoSubHeaps = listaQuebrada.Select(heap => heap.First()).Max();   // θ(n / √n) + θ(1) + θ(n / √n) === θ(n log n)
+                    listaOrdenada.Add(maiorElementoSubHeaps);   // θ(1)
+                    var listaTemporáriaExterna = new List<List<int>>(); // θ(1)
+                    foreach (var heap in listaQuebrada) // θ(n / √n) * θ(n / √n) === θ(n)
                     {
-                        if (heap.First() == maiorElementoSubHeaps)
+                        if (heap.First() == maiorElementoSubHeaps)  // θ(1)
                         {
-                            RemoveRootNode(heap);
+                            RemoveRootNode(heap);   // θ(n / √n)
                         }
 
-                        listaTemporáriaExterna.Add(heap);
+                        listaTemporáriaExterna.Add(heap);   // θ(1)
                     }
 
-                    listaTemporáriaExterna = listaTemporáriaExterna.Where(fim => fim.Any()).ToList();
-                    listaQuebrada = listaTemporáriaExterna;
-                    if (listaQuebrada.Any()) continue;
+                    listaTemporáriaExterna = listaTemporáriaExterna.Where(fim => fim.Any()).ToList();   // θ(√n) * θ(n / √n) === θ(n)
+                    listaQuebrada = listaTemporáriaExterna; // θ(1)
+                    if (listaQuebrada.Any()) continue;  // θ(1)
                     stopwatch.Stop();
 
                     Console.WriteLine("[*] Tempo de execução do Sqrt sort: {0} Milissegundos",
@@ -250,7 +250,7 @@ namespace FloorOnDemilich
         }
 
         [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
-        public static void ExecuçãoMétodoQuadrático(List<int> vetorInicial)
+        public static void ExecuçãoMétodoQuadrático(List<int> vetorInicial) // θ(n^2)
         {
             var stopwatch = new Stopwatch();
 
@@ -265,37 +265,37 @@ namespace FloorOnDemilich
             //     $"[*] Tempo de geração da lista aleatória distinta: {stopwatch.ElapsedMilliseconds} Milissegundos");
 
             stopwatch.Start();
-            var tamanhoMáximoCadaParte = (int)Math.Truncate(Math.Sqrt(vetorInicial.Count));
-            var listaQuebrada = vetorInicial.Chunk(tamanhoMáximoCadaParte).Select(BubbleSort).ToList();
+            var tamanhoMáximoCadaParte = (int)Math.Truncate(Math.Sqrt(vetorInicial.Count)); // θ(1)
+            var listaQuebrada = vetorInicial.Chunk(tamanhoMáximoCadaParte).Select(BubbleSort).ToList(); // θ(n) + θ(n / √n) + θ(n^2) === θ(n^2)
             stopwatch.Stop();
 
             Console.WriteLine(
                 $"[*] Tempo de criação de sub-listas e ordenação: {stopwatch.ElapsedMilliseconds} Milissegundos");
 
             stopwatch.Start();
-            var listaOrdenada = new List<int>();
-            while (true)
+            var listaOrdenada = new List<int>();    // θ(1)
+            while (true)    // ( θ(n / √n) + θ(n) + θ(n / √n) ) * θ(n) == θ(n^2)
             {
                 try
                 {
-                    listaOrdenada.Add(listaQuebrada.Select(lista => lista.Last()).Max());
-                    var listaTemporáriaExterna = new List<int[]>();
-                    foreach (var listaInterna in listaQuebrada)
+                    listaOrdenada.Add(listaQuebrada.Select(lista => lista.Last()).Max());   // θ(n / √n) + θ(1) + θ(n / √n) + θ(1) == θ(n / √n)
+                    var listaTemporáriaExterna = new List<int[]>(); // θ(1)
+                    foreach (var listaInterna in listaQuebrada) // θ(n / √n) * θ(√n) === θ(n)
                     {
-                        var listaTemporáriaInterna = new List<int>();
-                        if (listaInterna.Contains(listaOrdenada.Last()))
+                        var listaTemporáriaInterna = new List<int>();   // θ(1)
+                        if (listaInterna.Contains(listaOrdenada.Last()))    // θ(1)
                         {
                             listaTemporáriaInterna.AddRange(listaInterna.Where(itemInterno =>
-                                itemInterno != listaOrdenada.Last()));
-                            listaTemporáriaExterna.Add(listaTemporáriaInterna.ToArray());
+                                itemInterno != listaOrdenada.Last()));  // θ(√n) + θ(1) + θ(1) === θ(√n)
+                            listaTemporáriaExterna.Add(listaTemporáriaInterna.ToArray()); // θ(1)
                         }
                         else
                         {
-                            listaTemporáriaExterna.Add(listaInterna);
+                            listaTemporáriaExterna.Add(listaInterna); // θ(1)
                         }
                     }
 
-                    listaTemporáriaExterna = listaTemporáriaExterna.Where(fim => fim.Any()).ToList();
+                    listaTemporáriaExterna = listaTemporáriaExterna.Where(fim => fim.Any()).ToList(); // θ(n / √n)
                     listaQuebrada = listaTemporáriaExterna;
                     if (listaQuebrada.Any()) continue;
                     stopwatch.Stop();
