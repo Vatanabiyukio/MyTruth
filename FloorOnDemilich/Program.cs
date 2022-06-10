@@ -6,26 +6,22 @@ using FloorOnDemilich;
 var random = new Random();
 var stopwatch = new Stopwatch();
 const int potência = 4;
-var vetorInicial = Enumerable.Range(0, 100000).Select(_ => random.Next((int)Math.Pow(10, 9))).Distinct().ToList();
-vetorInicial.Sort();
-vetorInicial.Reverse();
-foreach (var j in Enumerable.Range(8, 25))
+foreach (var j in Enumerable.Range(0, 10))
 {
     stopwatch.Start();
-    // var vetorInicial = Enumerable.Range(0, (int)Math.Pow(10, potência))
-    //     .Select(_ => random.Next((int)Math.Pow(10, 9))).Distinct().ToList();    // θ(?)
+    var vetorInicial = Enumerable.Range(0, (int)Math.Pow(10, potência))
+        .Select(_ => random.Next((int)Math.Pow(10, 9))).Distinct().ToList();    // θ(?)
     stopwatch.Stop();
-    var vetor = vetorInicial.Take((int)Math.Pow(2,j) * 10).ToList();
-    /*Console.WriteLine($"[#] Quantidade de unidades distintas no vetor: {vetor.Count}");
+    Console.WriteLine($"[#] Quantidade de unidades distintas no vetor: {vetorInicial.Count}");
     Console.WriteLine(
-        $"[*] Tempo de geração da lista aleatória distinta: {stopwatch.ElapsedMilliseconds} Milissegundos\n");*/
-    Console.WriteLine($"#=#=#=#=#=#= Método HEAP {potência} #=#=#=#=#=#=");
-    SqrtSort.ExecuçãoHeap(vetor);    // θ(n^2 (log √n) / √n) // θ(n / √n) // θ(√n)
+        $"[*] Tempo de geração da lista aleatória distinta: {stopwatch.ElapsedMilliseconds} Milissegundos\n");
+    Console.WriteLine($"#=#=#=#=#=#= Método HEAP {j} #=#=#=#=#=#=");
+    SqrtSort.ExecuçãoHeap(vetorInicial);    // θ(n^2 (log √n) / √n) // θ(n / √n) // θ(√n)
     Console.WriteLine("#=#=#=#=##=#=#=#=##=#=#=#=#=#=#=#=#=#\n");
-    //
-    // Console.WriteLine($"#=#=#=#=# Método QUADRÁTICO {potência} #=#=#=#=#");
-    // SqrtSort.ExecuçãoMétodoQuadrático(vetorInicial);    // θ(n^2)
-    // Console.WriteLine("#=#=#=#=##=#=#=#=##=#=#=#=#=#=#=#=#=#\n");
+    
+    Console.WriteLine($"#=#=#=#=# Método QUADRÁTICO {j} #=#=#=#=#");
+    SqrtSort.ExecuçãoMétodoQuadrático(vetorInicial);    // θ(n^2)
+    Console.WriteLine("#=#=#=#=##=#=#=#=##=#=#=#=#=#=#=#=#=#\n");
 }
 
 GC.Collect();
@@ -56,13 +52,13 @@ namespace FloorOnDemilich
             }
         }
 
-        /*public static void PrintArray(List<int> arr, int n = 0)
+        public static void PrintArray(List<int> arr, int n = 0)
         {
             if (n == 0)
                 n = arr.Count;
             for (var i = 0; i < n; i++)
                 Console.WriteLine(arr[i] + " ");
-        }*/
+        }
 
         private static void Heapify(IList<int> arr, int size, int element)  // θ(log n)
         {
@@ -127,33 +123,6 @@ namespace FloorOnDemilich
             Heapify(arr, arr.Count, 0); // θ(log n)
         }
 
-        /*private static bool CheckMaxHeap(List<int> nums)
-        {
-            var n = nums.Count;
-            foreach (var i in Enumerable.Range(0, n))
-            {
-                var m = i * 2;
-                var num = nums.ElementAt(i);
-                if (m + 1 < n)
-                {
-                    if (num < nums.ElementAt(m + 1))
-                    {
-                        return false;
-                    }
-                }
-        
-                if (m + 2 < n)
-                {
-                    if (num < nums.ElementAt(m + 2))
-                    {
-                        return false;
-                    }
-                }
-            }
-        
-            return true;
-        }*/
-
         private static bool CheckMaxHeap(IReadOnlyList<int> nums)
          {
              for (var i = 0; i < nums.Count; ++i)
@@ -206,8 +175,8 @@ namespace FloorOnDemilich
             stopwatch.Start();
             var tamanhoMáximoCadaParte = (int)Math.Truncate(Math.Sqrt(vetorInicial.Count)); // θ(1)
             var listaQuebrada = vetorInicial.Chunk(tamanhoMáximoCadaParte).Select(GenerateHeap).ToList();   // θ(n) + θ(n / √n) + θ(n log n) === θ(n log n)
-            // var listaVerificar = listaQuebrada.Any(x => CheckMaxHeap(x.ToList()));
             stopwatch.Stop();
+            // var listaVerificar = listaQuebrada.Any(x => CheckMaxHeap(x.ToList()));
             // if (!listaVerificar)
             //     return;
 
@@ -313,10 +282,6 @@ namespace FloorOnDemilich
                     break;
                 }
             }
-            /*foreach (var itemOrdenado in listaOrdenada)
-            {
-                Console.WriteLine(itemOrdenado);
-            }*/
         }
     }
 }
