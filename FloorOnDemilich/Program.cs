@@ -6,22 +6,26 @@ using FloorOnDemilich;
 var random = new Random();
 var stopwatch = new Stopwatch();
 const int potência = 4;
-foreach (var _ in Enumerable.Range(0, 1))
+var vetorInicial = Enumerable.Range(0, 100000).Select(_ => random.Next((int)Math.Pow(10, 9))).Distinct().ToList();
+vetorInicial.Sort();
+vetorInicial.Reverse();
+foreach (var j in Enumerable.Range(8, 25))
 {
     stopwatch.Start();
-    var vetorInicial = Enumerable.Range(0, (int)Math.Pow(10, potência))
-        .Select(_ => random.Next((int)Math.Pow(10, 9))).Distinct().ToList();    // θ(?)
+    // var vetorInicial = Enumerable.Range(0, (int)Math.Pow(10, potência))
+    //     .Select(_ => random.Next((int)Math.Pow(10, 9))).Distinct().ToList();    // θ(?)
     stopwatch.Stop();
-    Console.WriteLine($"[#] Quantidade de unidades distintas no vetor: {vetorInicial.Count}");
+    var vetor = vetorInicial.Take((int)Math.Pow(2,j) * 10).ToList();
+    /*Console.WriteLine($"[#] Quantidade de unidades distintas no vetor: {vetor.Count}");
     Console.WriteLine(
-        $"[*] Tempo de geração da lista aleatória distinta: {stopwatch.ElapsedMilliseconds} Milissegundos\n");
+        $"[*] Tempo de geração da lista aleatória distinta: {stopwatch.ElapsedMilliseconds} Milissegundos\n");*/
     Console.WriteLine($"#=#=#=#=#=#= Método HEAP {potência} #=#=#=#=#=#=");
-    SqrtSort.ExecuçãoHeap(vetorInicial);    // θ(n log n)
+    SqrtSort.ExecuçãoHeap(vetor);    // θ(n^2 (log √n) / √n) // θ(n / √n) // θ(√n)
     Console.WriteLine("#=#=#=#=##=#=#=#=##=#=#=#=#=#=#=#=#=#\n");
-
-    Console.WriteLine($"#=#=#=#=# Método QUADRÁTICO {potência} #=#=#=#=#");
-    SqrtSort.ExecuçãoMétodoQuadrático(vetorInicial);    // θ(n^2)
-    Console.WriteLine("#=#=#=#=##=#=#=#=##=#=#=#=#=#=#=#=#=#\n");
+    //
+    // Console.WriteLine($"#=#=#=#=# Método QUADRÁTICO {potência} #=#=#=#=#");
+    // SqrtSort.ExecuçãoMétodoQuadrático(vetorInicial);    // θ(n^2)
+    // Console.WriteLine("#=#=#=#=##=#=#=#=##=#=#=#=#=#=#=#=#=#\n");
 }
 
 GC.Collect();
@@ -185,7 +189,7 @@ namespace FloorOnDemilich
         }
 
         [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
-        public static List<int> ExecuçãoHeap(List<int> vetorInicial)    // θ(n log n) + θ(n^2 log n) === θ(n log n)
+        public static void ExecuçãoHeap(List<int> vetorInicial)    // θ(n log n) + θ(n^2 (log √n) / √n) === θ(n^2 (log √n) / √n) // θ(n / √n)
         {
             var stopwatch = new Stopwatch();
 
@@ -212,18 +216,18 @@ namespace FloorOnDemilich
 
             stopwatch.Start();
             var listaOrdenada = new List<int>(); // θ(1)
-            while (true)    // ( θ(n log n) + θ(n) + θ(n) ) * θ(n) === θ(n log n) * θ(n) === θ(n^2 log n)
+            while (true)    // ( θ(n / √n) + θ(n (log √n) / √n) + θ(n) ) * θ(n) === θ(n (log √n) / √n) * θ(n) === θ(n^2 (log √n) / √n) // θ(n / √n)
             {
                 try
                 {
-                    var maiorElementoSubHeaps = listaQuebrada.Select(heap => heap.First()).Max();   // θ(n / √n) + θ(1) + θ(n / √n) === θ(n log n)
+                    var maiorElementoSubHeaps = listaQuebrada.Select(heap => heap.First()).Max();   // θ(n / √n) + θ(1) + θ(n / √n) === θ(n / √n)
                     listaOrdenada.Add(maiorElementoSubHeaps);   // θ(1)
                     var listaTemporáriaExterna = new List<List<int>>(); // θ(1)
-                    foreach (var heap in listaQuebrada) // θ(n / √n) * θ(n / √n) === θ(n)
+                    foreach (var heap in listaQuebrada) // θ(n / √n) * θ(log √n) === θ(n (log √n) / √n) // θ(n / √n)
                     {
                         if (heap.First() == maiorElementoSubHeaps)  // θ(1)
                         {
-                            RemoveRootNode(heap);   // θ(n / √n)
+                            RemoveRootNode(heap);   // θ(log √n) // θ(1)
                         }
 
                         listaTemporáriaExterna.Add(heap);   // θ(1)
@@ -245,8 +249,6 @@ namespace FloorOnDemilich
                     break;
                 }
             }
-
-            return listaOrdenada;
         }
 
         [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
