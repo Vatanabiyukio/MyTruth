@@ -19,6 +19,40 @@ public class TesteController : ControllerBase
         _contextB = contextB; 
         _contextC = contextC;
     }
+    
+    [HttpGet("Errados")]
+    public async Task<ActionResult> GetErrados()
+    {
+        var previsão = await _contextA.TbPrvsos.Where(prev => prev.IdExrco == 10 && prev.IdUf == 0).ToListAsync();
+        var informaçãoDaRegraGeral = new List<object?>();
+        var informaçãoFalha = new List<object?>();
+        try
+        {
+            foreach (var caso in previsão)
+            {
+                var peixe = await _contextC.TbBbEps.FirstOrDefaultAsync(peixe => peixe.Cpf == caso.NrCpf);
+                if (peixe == null)
+                {
+                    informaçãoFalha.Add(caso.NrCpf);
+                    continue;
+                }
+                var tubarão = new { CPF = peixe.Cpf, Cd_Ltcao = peixe.Prefixo };
+                informaçãoDaRegraGeral.Add(tubarão);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+        foreach (var item in informaçãoFalha)
+        {
+            Console.WriteLine(item);
+        }
+
+        return Ok(informaçãoDaRegraGeral);
+    }
 
     // GET
     [HttpGet("Corrigir_Pessoa_EPS_BB_Via_CPF")]

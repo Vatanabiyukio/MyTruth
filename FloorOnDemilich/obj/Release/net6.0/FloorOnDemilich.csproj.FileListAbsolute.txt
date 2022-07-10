@@ -2,7 +2,6 @@
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/bin/Release/net6.0/FloorOnDemilich.deps.json
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/bin/Release/net6.0/FloorOnDemilich.runtimeconfig.json
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/bin/Release/net6.0/FloorOnDemilich.dll
-/Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/bin/Release/net6.0/ref/FloorOnDemilich.dll
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/bin/Release/net6.0/FloorOnDemilich.pdb
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/FloorOnDemilich.csproj.AssemblyReference.cache
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/FloorOnDemilich.GeneratedMSBuildEditorConfig.editorconfig
@@ -10,6 +9,7 @@
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/FloorOnDemilich.AssemblyInfo.cs
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/FloorOnDemilich.csproj.CoreCompileInputs.cache
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/FloorOnDemilich.dll
-/Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/ref/FloorOnDemilich.dll
+/Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/refint/FloorOnDemilich.dll
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/FloorOnDemilich.pdb
 /Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/FloorOnDemilich.genruntimeconfig.cache
+/Users/viniciusvatanabi/Desktop/MyTruth/FloorOnDemilich/obj/Release/net6.0/ref/FloorOnDemilich.dll

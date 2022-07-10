@@ -30,7 +30,7 @@ public class PrivacyModel : PageModel
 
     public byte[] GerarPdf()
     {
-        var caminhoDoPdf = "/Users/viniciusvatanabi/Desktop/MyTruth/AttackOnLich/wwwroot/guia/GUIA.pdf";
+        const string caminhoDoPdf = "/Users/viniciusvatanabi/Desktop/MyTruth/AttackOnLich/wwwroot/guia/GUIA.pdf";
         var reader = new PdfReader(new RandomAccessFileOrArray(caminhoDoPdf), null);
         var size = reader.GetPageSizeWithRotation(1);
         var memoryStream = new MemoryStream();
@@ -53,20 +53,20 @@ public class PrivacyModel : PageModel
         cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Responsável Técnico", 362F, 574F, 0F);
         
         //Quadro - Responsável Técnico - Medico
-        cb.SetFontAndSize(baseFont, 8);
-        cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "Guilda Fairy Tail".ToUpper(), 440F, 551F, 0F);
+        // cb.SetFontAndSize(baseFont, 7);
+        cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "Arroz de Frango da Silva".ToUpper(), 440F, 551F, 0F);
 
         //Quadro - Cargo
-        cb.SetFontAndSize(baseFont, 6);
+        // cb.SetFontAndSize(baseFontNegrito, 7);
         cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "Mago Rank S+".ToUpper(), 440F, 545F, 0F);
 
         //Quadro - RQE
-        cb.SetFontAndSize(baseFontNegrito, 7);
+        // cb.SetFontAndSize(baseFontNegrito, 7);
         cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RQE Nº: 213697135", 362F, 526F, 0F);
 
         //Quadro - CRM
         cb.ShowTextAligned(PdfContentByte.ALIGN_RIGHT, "CRM-DF: 51778", 519.2F, 526F, 0F);
-        cb.SetFontAndSize(baseFont, 7);
+        // cb.SetFontAndSize(baseFont, 7);
 
         //4 - Data da Autorização
         cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, new DateOnly(2022, 5, 5).ToShortDateString(), 89.3F, 502.4F, 0F);
@@ -83,6 +83,11 @@ public class PrivacyModel : PageModel
 
         //10 - Nome Funcionário
         cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "Natsu Dragneel".ToUpper(), 466F, 470.5F, 0F);
+        
+        //11 - Cartão Nacional de Saúde
+        cb.SetCharacterSpacing(6.23F);
+        cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "297254815721401", 669.3F, 470.5F, 0F);
+        cb.SetCharacterSpacing(0);
 
         //13 - Código Operadora
         cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, Convert.ToUInt64("12745123553599").ToString(@"00\.000\.000\/0000\-00"), 111.8F, 439.6F, 0F);
@@ -91,7 +96,7 @@ public class PrivacyModel : PageModel
         cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "Rodolfo Souto".ToUpper(), 199.25F, 417.45F, 0F);
         
         //16 - Conselho Profissional
-        cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "CRM-KW".ToUpper(), 385.4F, 417F, 0F);
+        cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "CRM".ToUpper(), 385.4F, 416.4F, 0F);
         
         //17 - Número no Conselho
         cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "9822", 492F, 417.45F, 0F);
@@ -118,22 +123,38 @@ public class PrivacyModel : PageModel
 
         //24 Tabela
         cb.SetCharacterSpacing(6);
-        cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, "69", 57.38F, 362F, 0F);
+        foreach (var i in Enumerable.Range(0, 5))
+        {
+            cb.ShowTextAligned(PdfContentByte.ALIGN_CENTER, (i+10).ToString(), 57.38F, 362F - 9.9123F * i, 0F);
+        }
 
         //25 Código De Procedimento
         cb.SetCharacterSpacing(6.7F);
-        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "0000026534".PadLeft(10, '0'), 77.61F, 362F, 0F);
+        foreach (var i in Enumerable.Range(0, 5))
+        {
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "0000026534".PadLeft(10, '0'), 77.61F, 362F - 9.9123F * i, 0F);
+        }
 
         //26 - Código do Procedimento ou Item Assistencial
         cb.SetCharacterSpacing(0);
-        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Riku uiva como se estivesse golpeando as próprias emoções.".ToUpper(), 192F, 362F, 0F);
-        
-        //28 - Quantidade Solicitada = Quantidade Autorizada
+        foreach (var i in Enumerable.Range(0, 5))
+        {
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT,
+                "Riku uiva como se estivesse golpeando as próprias emoções.".ToUpper(), 192F, 362F - 9.9123F * i, 0F);
+        }
+
+        //27 - Quantidade Solicitada = Quantidade Autorizada
         cb.SetCharacterSpacing(6);
-        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "001".PadLeft(3, '0'), 784.8F, 362F, 0F);
+        foreach (var i in Enumerable.Range(0, 5))
+        {
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "001".PadLeft(3, '0'), 784.8F, 362F - 9.9123F * i, 0F);
+        }
 
         //28 - Quantidade Autorizada
-        cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "001".PadLeft(3, '0'), 746.6F, 362F, 0F);
+        foreach (var i in Enumerable.Range(0, 5))
+        {
+            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "001".PadLeft(3, '0'), 746.6F, 362F - 9.9123F * i, 0F);
+        }
 
         //33 - Indicação de Acidente
         cb.SetCharacterSpacing(0);

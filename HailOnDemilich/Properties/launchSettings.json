@@ -12,9 +12,9 @@
     "HailOnDemilich": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "api/Teste/Corrigir_Pessoa_EPS_BB_Via_CPF?cpf=00503387576",
-      "applicationUrl": "https://localhost:7250;http://localhost:5080",
+      "applicationUrl": "https://*:7250;http://*:5080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

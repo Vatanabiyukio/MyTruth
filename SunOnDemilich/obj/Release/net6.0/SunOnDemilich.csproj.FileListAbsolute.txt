@@ -10,7 +10,6 @@
 /Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/SunOnDemilich.deps.json
 /Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/SunOnDemilich.runtimeconfig.json
 /Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/SunOnDemilich.dll
-/Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/ref/SunOnDemilich.dll
 /Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/SunOnDemilich.pdb
 /Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/Humanizer.dll
 /Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/bin/Release/net6.0/MessagePack.dll
@@ -283,3 +282,4 @@
 /Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/obj/Release/net6.0/ref/SunOnDemilich.dll
 /Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/obj/Release/net6.0/SunOnDemilich.pdb
 /Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/obj/Release/net6.0/SunOnDemilich.genruntimeconfig.cache
+/Users/viniciusvatanabi/Desktop/MyTruth/SunOnDemilich/obj/Release/net6.0/refint/SunOnDemilich.dll
