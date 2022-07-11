@@ -2,11 +2,11 @@
 using WindOnDemilich;
 
 Estatística.TempoMédio(Projeto.MétodoGulosoEx,
-    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_1_10000_1000_1", 10000);
+    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_1_10000_1000_1", 1);
 Estatística.TempoMédio(Projeto.MétodoGulosoXd,
-    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_1_10000_1000_1", 10000);
+    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_1_10000_1000_1", 1);
 Estatística.TempoMédio(Projeto.MétodoDinâmico,
-    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_1_10000_1000_1", 100);
+    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_1_10000_1000_1", 1);
 
 namespace WindOnDemilich
 {
@@ -181,26 +181,12 @@ namespace WindOnDemilich
     {
         public static int MétodoDinâmico(string caminho)
         {
-            var itens = new List<List<int>>();
-            var pesoUnit = new List<int>();
-            var valorUnit = new List<int>();
+            var itens = (from line in File.ReadLines(caminho) let valor = line.TrimEnd().Split(' ')[0] let peso = line.TrimEnd().Split(' ')[1] select new Amostra(int.Parse(valor), int.Parse(peso))).ToList();
 
-            foreach (var line in File.ReadLines(caminho))
-            {
-                var valor = line.TrimEnd().Split(' ')[0];
-                var peso = line.TrimEnd().Split(' ')[1];
-                itens.Add(new List<int>{int.Parse(valor), int.Parse(peso)});
-            }
-            
-            var pesoMáximo = itens[0][1];
+            var pesoMáximo = itens[0].Peso;
             itens.RemoveAt(0);
             itens.RemoveAt(itens.Count - 1);
             var quantidadeDeItens = itens.Count;
-            foreach (var item in itens)
-            {
-                valorUnit.Add(item[0]);
-                pesoUnit.Add(item[1]);
-            }
 
             var matrizDinâmica = new int[quantidadeDeItens+1, pesoMáximo+1];
 
@@ -212,9 +198,9 @@ namespace WindOnDemilich
                     {
                         matrizDinâmica[i, j] = 0;
                     }
-                    else if (pesoUnit[i - 1] <= j)
+                    else if (itens[i - 1].Peso <= j)
                     {
-                        matrizDinâmica[i, j] = Math.Max(valorUnit[i - 1] + matrizDinâmica[i - 1, j - pesoUnit[i - 1]], matrizDinâmica[i - 1, j]);
+                        matrizDinâmica[i, j] = Math.Max(itens[i - 1].Valor + matrizDinâmica[i - 1, j - itens[i - 1].Peso], matrizDinâmica[i - 1, j]);
                     }
                     else
                     {
