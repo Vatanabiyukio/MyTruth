@@ -2,11 +2,11 @@
 using WindOnDemilich;
 
 Estatística.TempoMédio(Projeto.MétodoGulosoEx,
-    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_1_10000_1000_1", 1);
+    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_2_10000_1000_1", 1);
 Estatística.TempoMédio(Projeto.MétodoGulosoXd,
-    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_1_10000_1000_1", 1);
+    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_2_10000_1000_1", 1);
 Estatística.TempoMédio(Projeto.MétodoDinâmico,
-    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_1_10000_1000_1", 1);
+    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_2_10000_1000_1", 1);
 
 namespace WindOnDemilich
 {
