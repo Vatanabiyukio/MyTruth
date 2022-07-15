@@ -1,12 +1,11 @@
 ﻿using System.Diagnostics;
 using WindOnDemilich;
 
-Estatística.TempoMédio(Projeto.MétodoGulosoEx,
-    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_2_10000_1000_1", 1);
-Estatística.TempoMédio(Projeto.MétodoGulosoXd,
-    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_2_10000_1000_1", 1);
-Estatística.TempoMédio(Projeto.MétodoDinâmico,
-    @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_2_10000_1000_1", 1);
+const string path = @"/Users/viniciusvatanabi/Downloads/dataset/large_scale/knapPI_3_5_1000_1";
+
+Estatística.TempoMédio(Projeto.MétodoGulosoEx, path, 1);
+Estatística.TempoMédio(Projeto.MétodoGulosoXd, path, 1);
+Estatística.TempoMédio(Projeto.MétodoDinâmico, path, 1);
 
 namespace WindOnDemilich
 {
@@ -156,10 +155,11 @@ namespace WindOnDemilich
             var média = 0.0;
             Directory.CreateDirectory($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/Resultados");
             File.WriteAllText($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/Resultados/{método.Method.Name}.csv", $"Index,Tempo{Environment.NewLine}");
+            var resultadoMétodo = 0;
             while (re < repetições)
             {
                 cronômetro.Start();
-                var resultadoMétodo = método(caminho);
+                resultadoMétodo = método(caminho);
                 cronômetro.Stop();
                 var tempo = cronômetro.ElapsedMilliseconds;
                 if (detalhar)
@@ -173,6 +173,7 @@ namespace WindOnDemilich
             }
 
             Exibição.Imprimir($"Tempo médio - {método.Method.Name}: {média / (float) repetições} ms", Tipo.Sucesso);
+            Exibição.Imprimir($"Ideal (%) - {método.Method.Name}: {resultadoMétodo / (float) Projeto.MétodoDinâmico(caminho) * 100}%", Tipo.Sucesso);
             return média / (float)repetições;
         }
     }
@@ -190,6 +191,8 @@ namespace WindOnDemilich
 
             var matrizDinâmica = new int[quantidadeDeItens+1, pesoMáximo+1];
 
+            var ordem = new List<char>();
+
             foreach (var i in Enumerable.Range(0, quantidadeDeItens + 1))
             {
                 foreach (var j in Enumerable.Range(0, pesoMáximo + 1))
@@ -197,16 +200,43 @@ namespace WindOnDemilich
                     if (i == 0 || j == 0)
                     {
                         matrizDinâmica[i, j] = 0;
+                        ordem.Add('a');
                     }
                     else if (itens[i - 1].Peso <= j)
                     {
                         matrizDinâmica[i, j] = Math.Max(itens[i - 1].Valor + matrizDinâmica[i - 1, j - itens[i - 1].Peso], matrizDinâmica[i - 1, j]);
+                        ordem.Add('b');
                     }
                     else
                     {
                         matrizDinâmica[i, j] = matrizDinâmica[i - 1, j];
+                        ordem.Add('c');
                     }
                 }
+            }
+
+            File.WriteAllText("potato.txt", "");
+            var contadorDeLinhas = 0;
+            foreach (var matriz in ordem)
+            {
+                if (contadorDeLinhas == pesoMáximo + 1)
+                {
+                    contadorDeLinhas = 0;
+                    File.AppendAllText("potato.txt", Environment.NewLine);
+                }
+
+                if (contadorDeLinhas == pesoMáximo)
+                {
+                    File.AppendAllText("potato.txt", $"{matriz}");
+                }
+                else
+                {
+                    File.AppendAllText("potato.txt", $"{matriz}, ");
+                }
+
+                contadorDeLinhas++;
+                
+
             }
 
             return matrizDinâmica[quantidadeDeItens, pesoMáximo];
@@ -214,7 +244,7 @@ namespace WindOnDemilich
 
         public static int MétodoGulosoEx(string caminho)
         {
-            var itens = (from line in File.ReadLines(caminho) let valor = line.TrimEnd().Split(' ')[0] let peso = line.TrimEnd().Split(' ')[1] where int.Parse(peso) != 0 select new Amostra(int.Parse(valor), int.Parse(peso))).ToList();
+            var itens = (from line in File.ReadLines(caminho) let valor = line.TrimEnd().Split(' ')[0] let peso = line.TrimEnd().Split(' ')[1] select new Amostra(int.Parse(valor), int.Parse(peso))).ToList();
 
             var pesoMáximo = itens[0].Peso;
             itens.RemoveAt(0);
@@ -241,7 +271,7 @@ namespace WindOnDemilich
 
         public static int MétodoGulosoXd(string caminho)
         {
-            var itens = (from line in File.ReadLines(caminho) let valor = line.TrimEnd().Split(' ')[0] let peso = line.TrimEnd().Split(' ')[1] where int.Parse(peso) != 0 select new Amostra(int.Parse(valor), int.Parse(peso))).ToList();
+            var itens = (from line in File.ReadLines(caminho) let valor = line.TrimEnd().Split(' ')[0] let peso = line.TrimEnd().Split(' ')[1] select new Amostra(int.Parse(valor), int.Parse(peso))).ToList();
 
             var pesoMáximo = itens[0].Peso;
             itens.RemoveAt(0);
