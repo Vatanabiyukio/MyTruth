@@ -1,65 +1,30 @@
 ﻿using System.Diagnostics;
 using FlameOnDemilich;
 
-Projeto.Teste();
+var path = "/Users/viniciusvatanabi/Downloads/binpacking-instancias/input";
+Estatística.TempoMédio(Projeto.FirstFit, path, 1, false);
+Estatística.TempoMédio(Projeto.NextFit, path, 1, false);
+Estatística.TempoMédio(Projeto.BestFit, path, 1, false);
 
 namespace FlameOnDemilich
 {
-    public class Pacote
+    public class Amostra
     {
-        private List<int> _itens = new();
-        private List<int> _itensRejeitados = new();
+        public int Index { get; set; }
+        public double Tempo { get; set; }
+        public int Valor { get; set; }
 
-        public int Id => GetHashCode();
-        public int PesoMáximo { get; }
-
-        public List<int> Itens
+        public Amostra(int index, double tempo)
         {
-            get => _itens;
-            set
-            {
-                var interruptor = true;
-                foreach (var i in value)
-                {
-                    if (interruptor)
-                    {
-                        if (Adicionável(i))
-                        {
-                            _itens.Add(i);
-                            continue;
-                        }
-
-                        interruptor = false;
-                    }
-                    _itensRejeitados.Add(i);
-                }
-            }
+            Index = index;
+            Tempo = tempo;
         }
-
-        public List<int> ItensRejeitados => _itensRejeitados;
-
-        public int PesoDisponível => PesoMáximo - Itens.Sum();
-
-        public bool Cheio => PesoDisponível >= PesoMáximo;
-
-        public bool Adicionável(int value)
+        
+        public Amostra(int index, double tempo, int valor)
         {
-            return PesoDisponível - value >= 0;
-        }
-
-            public Pacote()
-        {
-        }
-
-        public Pacote(int pesoMáximo)
-        {
-            PesoMáximo = pesoMáximo;
-        }
-
-        public Pacote(int pesoMáximo, List<int> itens)
-        {
-            PesoMáximo = pesoMáximo;
-            Itens = itens;
+            Index = index;
+            Tempo = tempo;
+            Valor = valor;
         }
     }
     
@@ -178,79 +143,148 @@ namespace FlameOnDemilich
 
     internal static class Estatística
     {
-        // private static void SalvaEmArquivo(string nome, Amostra amostra)
-        // {
-        //     File.AppendAllText($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/Resultados/{nome}.csv", $"{Amostra.Index},{amostra.Tempo}{Environment.NewLine}");
-        // }
-        public static double TempoMédio(Func<string, int> método, string caminho, uint repetições = 10, bool detalhar = true)
+        private static void SalvaEmArquivo(string nome, Amostra amostra)
+        {
+            File.AppendAllText($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/Resultados/{nome}.csv", $"{amostra.Index},{amostra.Tempo}{Environment.NewLine}");
+        }
+        public static void TempoMédio(Func<string, int> método, string caminho, uint repetições = 10, bool detalhar = true, bool potato = false)
         {
             var cronômetro = new Stopwatch();
             var re = 0;
             var média = 0.0;
-            Directory.CreateDirectory($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/Resultados");
-            File.WriteAllText($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/Resultados/{método.Method.Name}.csv", $"Index,Tempo{Environment.NewLine}");
-            var resultadoMétodo = 0;
-            while (re < repetições)
+            // Directory.CreateDirectory($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/Resultados2");
+            foreach (var arq in Directory.GetFiles(caminho))
             {
-                cronômetro.Start();
-                resultadoMétodo = método(caminho);
-                cronômetro.Stop();
-                var tempo = cronômetro.ElapsedMilliseconds;
-                if (detalhar)
+                // File.WriteAllText(
+                //     $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}/Resultados2/{Path.GetFileName(arq).Split('.')[0]}_{método.Method.Name}.csv",
+                //     $"Index,Tempo{Environment.NewLine}");
+                var resultadoMétodo = 0;
+                while (re < repetições)
                 {
-                    Exibição.Imprimir($"{método.Method.Name} - {resultadoMétodo} - {tempo} ms", Tipo.Random);
+                    cronômetro.Start();
+                    resultadoMétodo = método(arq);
+                    cronômetro.Stop();
+                    var tempo = cronômetro.ElapsedTicks;
+                    if (detalhar)
+                    {
+                        Exibição.Imprimir($"{método.Method.Name} - {resultadoMétodo} - {tempo} ticks", Tipo.Random);
+                    }
+
+                    // SalvaEmArquivo($"{Path.GetFileName(arq).Split('.')[0]}_{método.Method.Name}", new Amostra(re, tempo));
+                    média += tempo;
+                    cronômetro.Reset();
+                    re++;
                 }
-                // SalvaEmArquivo(método.Method.Name, new Amostra(re, tempo));
-                média += tempo;
-                cronômetro.Reset();
-                re++;
+
+                // Exibição.Imprimir($"Tempo médio - {Path.GetFileName(arq).Split('.')[0]}_{método.Method.Name}: {média / (float)repetições} ticks",
+                //     Tipo.Sucesso);
+                if (potato)
+                {
+                    Console.WriteLine(resultadoMétodo);
+                }
+                re = 0;
+                média = 0.0;
             }
 
-            Exibição.Imprimir($"Tempo médio - {método.Method.Name}: {média / (float) repetições} ms", Tipo.Sucesso);
             // Exibição.Imprimir($"Ideal (%) - {método.Method.Name}: {resultadoMétodo / (float) Projeto.MétodoDinâmico(caminho) * 100}%", Tipo.Sucesso);
-            return média / (float)repetições;
+            // return média / (float)repetições;
         }
     }
 
     public static class Projeto
     {
-        public static void Teste()
+        public static int NextFit(string caminho)
         {
-            var arquivo = File.ReadAllLines("/Users/viniciusvatanabi/Downloads/binpacking-instancias/input/Waescher_TEST0005.txt").Select(int.Parse).ToList();
-            arquivo.RemoveAt(0);
-            var pesoMáximo = arquivo[0];
-            arquivo.RemoveAt(0);
-            var girafa = new List<Pacote>();
-            var contador = 0;
-            girafa.Add(new Pacote(pesoMáximo, arquivo));
-            contador++;
-            while (true)
-            {
-                var contador1 = 0;
-                foreach (var pacote in girafa.Where(g => !g.Cheio))
-                {
-                    if (pacote.Adicionável(girafa[^1].ItensRejeitados.First()))
-                    {
-                        contador1++;
-                        pacote.Itens = new List<int> { girafa[^1].ItensRejeitados.First() };
-                    }
-                }
+            var pesos = File.ReadAllLines(caminho).Select(int.Parse).ToList();
+            var capacidadeMáxima = pesos[1];
 
-                if (contador1 == 0)
+            foreach (var _ in Enumerable.Range(0, 2))
+            {
+                pesos.RemoveAt(0);
+            }
+            
+            var quantidadePacotes = 0;
+            var capacidadeRemanescente = capacidadeMáxima;
+
+            foreach (var peso in pesos)
+            {
+                if (peso > capacidadeRemanescente)
                 {
-                    girafa.Add(new Pacote(pesoMáximo, arquivo));
-                    contador++;
-                }
-                if (girafa[^1].ItensRejeitados.Count != 0)
-                {
-                    arquivo = girafa.Last().ItensRejeitados;
+                    quantidadePacotes++;
+                    capacidadeRemanescente = capacidadeMáxima - peso;
                 }
                 else
+                    capacidadeRemanescente -= peso;
+            }
+            return quantidadePacotes;
+        }
+        
+        public static int FirstFit(string caminho)
+        {
+            var pesos = File.ReadAllLines(caminho).Select(int.Parse).ToList();
+            var capacidadeMáxima = pesos[1];
+
+            foreach (var _ in Enumerable.Range(0, 2))
+            {
+                pesos.RemoveAt(0);
+            }
+            
+            var quantidadePacotes = 0;
+            var capacidadeRemanescente = new int[pesos.Count];
+ 
+            foreach (var peso in pesos)
+            {
+                int j;
+                for (j = 0; j < quantidadePacotes; j++)
                 {
+                    if (capacidadeRemanescente[j] < peso) continue;
+                    capacidadeRemanescente[j] -= peso;
                     break;
                 }
+                
+                if (j != quantidadePacotes) continue;
+                capacidadeRemanescente[quantidadePacotes] = capacidadeMáxima - peso;
+                quantidadePacotes++;
             }
-            Exibição.Imprimir(contador.ToString(), Tipo.Sucesso);
+            return quantidadePacotes;
+        }
+
+        public static int BestFit(string caminho)
+        {
+            var pesos = File.ReadAllLines(caminho).Select(int.Parse).ToList();
+            var capacidadeMáxima = pesos[1];
+
+            foreach (var _ in Enumerable.Range(0, 2))
+            {
+                pesos.RemoveAt(0);
+            }
+            
+            var quantidadePacotes = 0;
+            var capacidadeRemanescente = new int[pesos.Count];
+ 
+            foreach (var peso in pesos)
+            {
+                int j;
+                int min = capacidadeMáxima + 1, bi = 0;
+ 
+                for (j = 0; j < quantidadePacotes; j++)
+                {
+                    if (capacidadeRemanescente[j] < peso || capacidadeRemanescente[j] - peso >= min) continue;
+                    bi = j;
+                    min = capacidadeRemanescente[j] - peso;
+                }
+                
+                if (min == capacidadeMáxima + 1) {
+                    capacidadeRemanescente[quantidadePacotes] = capacidadeMáxima - peso;
+                    quantidadePacotes++;
+                }
+
+                else
+                {
+                    capacidadeRemanescente[bi] -= peso;
+                }
+            }
+            return quantidadePacotes;
         }
     }
 }
